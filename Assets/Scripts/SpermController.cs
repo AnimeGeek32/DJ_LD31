@@ -2,12 +2,14 @@
 using System.Collections;
 
 public class SpermController : MonoBehaviour {
-    public float speed = 3.0f;
+    public float speed = 60.0f;
+    public float defaultSpeed = 60.0f;
     public PlayerController playerController;
 
     public AudioClip wallHitSound;
     public AudioClip paddleHitSound;
     public AudioClip goalSound;
+    public AudioClip powerupSound;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +18,7 @@ public class SpermController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        rigidbody2D.velocity = transform.up * speed;
+        rigidbody2D.velocity = transform.up * speed * Time.deltaTime;
 	}
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -80,10 +82,23 @@ public class SpermController : MonoBehaviour {
             playerController.UpdateScore();
             Respawn();
         }
+        else if (collider.tag == "SpeedUp")
+        {
+            audio.PlayOneShot(powerupSound);
+            speed += 10.0f;
+            Destroy(collider.gameObject);
+        }
+        else if (collider.tag == "SpeedDown")
+        {
+            audio.PlayOneShot(powerupSound);
+            speed -= 10.0f;
+            Destroy(collider.gameObject);
+        }
     }
 
     public void Respawn()
     {
+        speed = defaultSpeed;
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360.0f));
     }

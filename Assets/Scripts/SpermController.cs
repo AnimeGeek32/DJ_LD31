@@ -5,6 +5,10 @@ public class SpermController : MonoBehaviour {
     public float speed = 3.0f;
     public PlayerController playerController;
 
+    public AudioClip wallHitSound;
+    public AudioClip paddleHitSound;
+    public AudioClip goalSound;
+
 	// Use this for initialization
 	void Start () {
         transform.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360.0f));
@@ -20,21 +24,40 @@ public class SpermController : MonoBehaviour {
         if (collision.collider.tag == "PlayerOne")
         {
             Debug.Log("Hit player 1.");
-            while (transform.rotation.eulerAngles.z < 90 && transform.rotation.eulerAngles.z > -90)
+            audio.PlayOneShot(paddleHitSound);
+            if (collision.rigidbody.velocity.x < 0)
             {
-                transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + 90);
+                transform.rotation = Quaternion.Euler(0, 0, 135.0f * (Mathf.Abs(collision.rigidbody.velocity.x) / (playerController.playerOneSpeed * Time.deltaTime)));
+            }
+            else if (collision.rigidbody.velocity.x > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, -135.0f * (Mathf.Abs(collision.rigidbody.velocity.x) / (playerController.playerOneSpeed * Time.deltaTime)));
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 180.0f);
             }
         }
         else if (collision.collider.tag == "PlayerTwo")
         {
             Debug.Log("Hit player 2.");
-            while ((transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z <= 180) || (transform.rotation.eulerAngles.z < -90 && transform.rotation.eulerAngles.z >= -180))
+            audio.PlayOneShot(paddleHitSound);
+            if (collision.rigidbody.velocity.x < 0)
             {
-                transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + 90);
+                transform.rotation = Quaternion.Euler(0, 0, 45.0f * (Mathf.Abs(collision.rigidbody.velocity.x) / (playerController.playerTwoSpeed * Time.deltaTime)));
+            }
+            else if (collision.rigidbody.velocity.x > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, -45.0f * (Mathf.Abs(collision.rigidbody.velocity.x) / (playerController.playerTwoSpeed * Time.deltaTime)));
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0.0f);
             }
         }
         else
         {
+            audio.PlayOneShot(wallHitSound);
             transform.rotation = Quaternion.Euler(0, 0, -transform.rotation.eulerAngles.z);
         }
     }
@@ -44,6 +67,7 @@ public class SpermController : MonoBehaviour {
         if (collider.tag == "P1Goal")
         {
             Debug.Log("Player Two Wins!");
+            audio.PlayOneShot(goalSound);
             playerController.AddScorePlayerTwo(1);
             playerController.UpdateScore();
             Respawn();
@@ -51,6 +75,7 @@ public class SpermController : MonoBehaviour {
         else if (collider.tag == "P2Goal")
         {
             Debug.Log("Player One Wins!");
+            audio.PlayOneShot(goalSound);
             playerController.AddScorePlayerOne(1);
             playerController.UpdateScore();
             Respawn();

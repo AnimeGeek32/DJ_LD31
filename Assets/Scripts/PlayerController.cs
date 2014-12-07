@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using InControl;
 
 public class PlayerController : MonoBehaviour {
     public GameObject playerOnePaddle;
     public GameObject playerTwoPaddle;
+    public Text playerOneScoreText;
+    public Text playerTwoScoreText;
 
     public float playerOneSpeed = 30.0f;
     public float playerTwoSpeed = 30.0f;
@@ -15,11 +18,17 @@ public class PlayerController : MonoBehaviour {
     private bool playerOneRightDown = false;
     private bool playerTwoLeftDown = false;
     private bool playerTwoRightDown = false;
+    private int playerOneScore;
+    private int playerTwoScore;
 
 	// Use this for initialization
 	void Start () {
         playerOneDevice = InputManager.Devices[0];
         playerTwoDevice = InputManager.Devices[1];
+        playerOneScore = 0;
+        playerTwoScore = 0;
+        playerOneScoreText.text = "0";
+        playerTwoScoreText.text = "0";
 
         playerOneLeftDown = false;
         playerOneRightDown = false;
@@ -99,4 +108,20 @@ public class PlayerController : MonoBehaviour {
         playerOnePaddle.rigidbody2D.velocity = playerOneMovement;
         playerTwoPaddle.rigidbody2D.velocity = playerTwoMovement;
 	}
+
+    public void AddScorePlayerOne(int newValue)
+    {
+        playerOneScore += newValue;
+    }
+
+    public void AddScorePlayerTwo(int newValue)
+    {
+        playerTwoScore += newValue;
+    }
+
+    public void UpdateScore()
+    {
+        playerOneScoreText.text = playerOneScore.ToString();
+        playerTwoScoreText.text = playerTwoScore.ToString();
+    }
 }

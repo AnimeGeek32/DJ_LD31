@@ -21,12 +21,19 @@ public class SpermController : MonoBehaviour {
         rigidbody2D.velocity = transform.up * speed * Time.deltaTime;
 	}
 
+    // Used to calculate the direction of the sperm after collision with the paddles
+    float HitFactor(Vector2 ballPos, Vector2 paddlePos, float paddleWidth)
+    {
+        return (paddlePos.x - ballPos.x) / paddleWidth;
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.tag == "PlayerOne")
         {
             Debug.Log("Hit player 1.");
             audio.PlayOneShot(paddleHitSound);
+            /*
             if (collision.rigidbody.velocity.x < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 135.0f * (Mathf.Abs(collision.rigidbody.velocity.x) / (playerController.playerOneSpeed * Time.deltaTime)));
@@ -39,11 +46,15 @@ public class SpermController : MonoBehaviour {
             {
                 transform.rotation = Quaternion.Euler(0, 0, 180.0f);
             }
+             */
+            float hitX = HitFactor(new Vector2(transform.position.x, transform.position.y), new Vector2(collision.transform.position.x, collision.transform.position.y), ((BoxCollider2D)collision.collider).size.x);
+            transform.rotation = Quaternion.Euler(0, 0, 180 - (45.0f * hitX));
         }
         else if (collision.collider.tag == "PlayerTwo")
         {
             Debug.Log("Hit player 2.");
             audio.PlayOneShot(paddleHitSound);
+            /*
             if (collision.rigidbody.velocity.x < 0)
             {
                 transform.rotation = Quaternion.Euler(0, 0, 45.0f * (Mathf.Abs(collision.rigidbody.velocity.x) / (playerController.playerTwoSpeed * Time.deltaTime)));
@@ -56,6 +67,9 @@ public class SpermController : MonoBehaviour {
             {
                 transform.rotation = Quaternion.Euler(0, 0, 0.0f);
             }
+             */
+            float hitX = HitFactor(new Vector2(transform.position.x, transform.position.y), new Vector2(collision.transform.position.x, collision.transform.position.y), ((BoxCollider2D)collision.collider).size.x);
+            transform.rotation = Quaternion.Euler(0, 0, 45.0f * hitX);
         }
         else
         {

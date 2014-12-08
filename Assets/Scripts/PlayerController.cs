@@ -23,8 +23,21 @@ public class PlayerController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        playerOneDevice = InputManager.Devices[0];
-        playerTwoDevice = InputManager.Devices[1];
+        if (InputManager.Devices.Count >= 1)
+        {
+            if (InputManager.Devices.Count == 1)
+            {
+                playerOneDevice = InputManager.ActiveDevice;
+            }
+            else
+            {
+                playerOneDevice = InputManager.Devices[0];
+            }
+        }
+        if (InputManager.Devices.Count >= 2)
+        {
+            playerTwoDevice = InputManager.Devices[1];
+        }
         playerOneScore = 0;
         playerTwoScore = 0;
         playerOneScoreText.text = "0";
@@ -42,8 +55,14 @@ public class PlayerController : MonoBehaviour {
         Vector2 playerOneMovement = Vector2.zero;
         Vector2 playerTwoMovement = Vector2.zero;
 
-        playerOneMovement.x = playerOneDevice.LeftStickX.Value * playerOneSpeed * Time.deltaTime;
-        playerTwoMovement.x = playerTwoDevice.LeftStickX.Value * playerTwoSpeed * Time.deltaTime;
+        if (playerOneDevice != null)
+        {
+            playerOneMovement.x = playerOneDevice.LeftStickX.Value * playerOneSpeed * Time.deltaTime;
+        }
+        if (playerTwoDevice != null)
+        {
+            playerTwoMovement.x = playerTwoDevice.LeftStickX.Value * playerTwoSpeed * Time.deltaTime;
+        }
 
         // Key Ups
         // Player One

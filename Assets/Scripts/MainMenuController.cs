@@ -11,9 +11,26 @@ public class MainMenuController : MonoBehaviour {
     public bool playerOneIsReady = false;
     public bool playerTwoIsReady = false;
 
+    private InputDevice playerOneDevice;
+    private InputDevice playerTwoDevice;
+
 	// Use this for initialization
 	void Start () {
-	
+        if (InputManager.Devices.Count >= 1)
+        {
+            if (InputManager.Devices.Count == 1)
+            {
+                playerOneDevice = InputManager.ActiveDevice;
+            }
+            else
+            {
+                playerOneDevice = InputManager.Devices[0];
+            }
+        }
+        if (InputManager.Devices.Count >= 2)
+        {
+            playerTwoDevice = InputManager.Devices[1];
+        }
 	}
 	
 	// Update is called once per frame
@@ -24,12 +41,12 @@ public class MainMenuController : MonoBehaviour {
         }
         else
         {
-            if (!playerOneIsReady && (InputManager.Devices[0].MenuWasPressed || Input.GetKeyDown(KeyCode.S)))
+            if (!playerOneIsReady && ((playerOneDevice != null && playerOneDevice.MenuWasPressed) || Input.GetKeyDown(KeyCode.S)))
             {
                 playerOneReadyText.text = "Player One is ready";
                 playerOneIsReady = true;
             }
-            if (!playerTwoIsReady && (InputManager.Devices[1].MenuWasPressed || Input.GetKeyDown(KeyCode.K)))
+            if (!playerTwoIsReady && ((playerTwoDevice != null && playerTwoDevice.MenuWasPressed) || Input.GetKeyDown(KeyCode.K)))
             {
                 playerTwoReadyText.text = "Player Two is ready";
                 playerTwoIsReady = true;
